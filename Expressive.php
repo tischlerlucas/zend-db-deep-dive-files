@@ -8,10 +8,9 @@ use Zend\Db\Sql\Ddl\Constraint\UniqueKey;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Index\Index;
+use Zend\Db\Sql\Ddl\SqlInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
-
-require 'vendor/autoload.php';
 
 class Expressive
 {
@@ -60,13 +59,8 @@ class Expressive
             ->addColumn(new Integer('population', false))
             ->addConstraint(new ForeignKey('fk_country', ['country_id'], 'country', ['id'], 'CASCADE', 'CASCADE'));
 
-        $this->adapter = $this->createAdapter();
-        $sql = $this->createSql($this->adapter);
         foreach ([$tableCountry, $tableCapital] as $table) {
-            $this->adapter->query(
-                $sql->buildSqlString($table),
-                $this->adapter::QUERY_MODE_EXECUTE
-            );
+            $this->executeSql($table);
         }
     }
 
@@ -76,17 +70,23 @@ class Expressive
         $table->changeColumn('name', new Varchar('name', 250, false));
         $table->addConstraint(new Index('name', 'idx_name', [10]));
 
-        $this->adapter = $this->createAdapter();
-        $sql = $this->createSql($this->adapter);
-
-        $this->adapter->query(
-            $sql->buildSqlString($table),
-            $this->adapter::QUERY_MODE_EXECUTE
-        );
+        $this->executeSql($table);
     }
 
-    private function dropTables()
+    public function dropTables()
     {
         $table = new \Zend\Db\Sql\Ddl\DropTable('capital');
+        $this->executeSql($table);
+
+        $table = new \Zend\Db\Sql\Ddl\DropTable('country');
+        $this->executeSql($table);
+    }
+
+    private function executeSql(SqlInterface $table)
+    {
+        $this->adapter->query(
+            $this->sql->buildSqlString($table),
+            $this->adapter::QUERY_MODE_EXECUTE
+        );
     }
 }
