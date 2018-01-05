@@ -89,4 +89,14 @@ class Expressive
             $this->adapter::QUERY_MODE_EXECUTE
         );
     }
+
+    public function getSqlClone() : Sql
+    {
+        return clone $this->sql;
+    }
+
+    public function getAdapterClone() : Adapter
+    {
+        return clone $this->adapter;
+    }
 }
