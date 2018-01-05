@@ -1,9 +1,8 @@
 <?php
 
-/** @var Expressive $expressive */
-$expressive = require 'expressive.php';
+require 'vendor/autoload.php';
 
-$sql = $expressive->getSqlClone();
+$sql = (new \Db\Services\SqlFactory())->create();
 $insert = $sql->insert();
 
 $countries = [

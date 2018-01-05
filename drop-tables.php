@@ -1,5 +1,9 @@
 <?php
 
-/** @var Expressive $expressive */
-$expressive = require 'expressive.php';
-$expressive->dropTables();
+require 'vendor/autoload.php';
+
+$capital = (new \Db\Tables\CapitalTableFactory())->create();
+$capital->dropTable();
+
+$country = (new \Db\Tables\CountryTableFactory())->create();
+$country->dropTable();

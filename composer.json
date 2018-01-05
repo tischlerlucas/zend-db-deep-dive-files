@@ -1,5 +1,10 @@
 {
     "require": {
         "zendframework/zend-db": "^2.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Db\\": "src\\App\\Db"
+        }
     }
 }
