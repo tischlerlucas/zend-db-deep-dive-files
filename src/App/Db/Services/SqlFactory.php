@@ -8,8 +8,14 @@ use Zend\Db\Sql\Sql;
 
 class SqlFactory
 {
-    public function create()
+    private $sql;
+
+    public function create() : Sql
     {
-        return new Sql((new AdapterFactory())->create());
+        if (!($this->sql instanceof Sql)) {
+            $this->sql = new Sql((new AdapterFactory())->create());
+        }
+
+        return $this->sql;
     }
 }

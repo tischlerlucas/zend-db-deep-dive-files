@@ -8,9 +8,15 @@ use Zend\Db\Adapter\Adapter;
 
 class AdapterFactory
 {
-    public function create()
+    private $adapter;
+
+    public function create() : Adapter
     {
-        $configArray = require __DIR__ . '/../../../../config/adapter.php';
-        return new Adapter($configArray);
+        if (!($this->adapter instanceof Adapter)) {
+            $configArray = require __DIR__ . '/../../../../config/adapter.php';
+            $this->adapter = new Adapter($configArray);
+        }
+
+        return $this->adapter;
     }
 }
