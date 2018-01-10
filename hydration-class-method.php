@@ -1,9 +1,10 @@
 <?php
 
+use Db\Hydration\ClassMethod\MayorSalaryEntity;
 use Db\Services\SqlFactory;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Hydrator\ObjectProperty;
+use Zend\Hydrator\ClassMethods;
 
 require 'vendor/autoload.php';
 
@@ -11,8 +12,8 @@ $sql = (new SqlFactory())->create();
 
 $select = $sql->select();
 $select->from([
-            'ca' => 'capital'
-    ])
+    'ca' => 'capital'
+])
     ->columns([
         'capital' => 'name',
     ])
@@ -32,19 +33,11 @@ $expression = (new \Zend\Db\Sql\Having())->expression('sum(ma.salary) > ?', [130
 
 $select->having($expression);
 
-
 $results = $sql->prepareStatementForSqlObject($select)->execute();
-
-class MayorSalaryEntity
-{
-    public $capital;
-    public $mayor;
-    public $salary;
-}
 
 if ($results instanceof ResultInterface && $results->isQueryResult()) {
     $resultSet = new HydratingResultSet(
-        new ObjectProperty(),
+        new ClassMethods(),
         new MayorSalaryEntity()
     );
 
@@ -54,8 +47,8 @@ if ($results instanceof ResultInterface && $results->isQueryResult()) {
 foreach ($resultSet as $result) {
     printf(
         "%s, %s, %s\n",
-        $result->capital,
-        $result->mayor,
-        $result->salary
+        $result->getCapital(),
+        $result->getMayor(),
+        $result->getSalary()
     );
 }
